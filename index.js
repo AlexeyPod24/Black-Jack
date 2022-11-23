@@ -1,39 +1,65 @@
+let player = {
+   name: "Per",
+   chips: 200
+}
 
-let isAlive = false;
-const hasBlackJack = false;
-let message = '';
-const startBtn = document.getElementById('start');
-const msg = document.getElementById('message')
-let sumofCards = document.getElementById('sum');
-let cards = document.getElementById('cards');
+let cards = []
+let sum = 0
+let hasBlackJack = false
+let isAlive = false
+let message = ""
+let messageEl = document.getElementById("message-el")
+let sumEl = document.getElementById("sum-el")
+let cardsEl = document.getElementById("cards-el")
+let playerEl = document.getElementById("player-el")
 
-// Game Logic
+playerEl.textContent = player.name + ": $" + player.chips
 
+function getRandomCard() {
+   let randomNumber = Math.floor( Math.random()*13 ) + 1
+   if (randomNumber > 10) {
+       return 10
+   } else if (randomNumber === 1) {
+       return 11
+   } else {
+       return randomNumber
+   }
+}
 
+function startGame() {
+   isAlive = true
+   let firstCard = getRandomCard()
+   let secondCard = getRandomCard()
+   cards = [firstCard, secondCard]
+   sum = firstCard + secondCard
+   renderGame()
+}
 
-startBtn.addEventListener('click', function () {
-   const firstCard = Math.floor(Math.random() * 11) + 2;
-   const secondCard = Math.floor(Math.random() * 11) + 2;
-   let sum = firstCard + secondCard;
-   cards.textContent = `Cards: ${firstCard}, ${secondCard}`
-   sumofCards.textContent = `Sum: ${sum}`;
-
-
-   if (sum < 21) {
-      msg.textContent = 'Do you want to draw a new card?'
-      
-   } else if (sum === 21) {
-      msg.textContent = "You've got Blackjack!!!!"
-      hasBlackJack = true;
-    
-   } else if (sum > 21) {
-      msg.textContent = 'Sorry, you lost!'
-      isAlive = false;
+function renderGame() {
+   cardsEl.textContent = "Cards: "
+   for (let i = 0; i < cards.length; i++) {
+       cardsEl.textContent += cards[i] + " "
    }
    
+   sumEl.textContent = "Sum: " + sum
+   if (sum <= 20) {
+       message = "Do you want to draw a new card?"
+   } else if (sum === 21) {
+       message = "You've got Blackjack!"
+       hasBlackJack = true
+   } else {
+       message = "You're out of the game!"
+       isAlive = false
+   }
+   messageEl.textContent = message
+}
 
 
-
-})
-
-
+function newCard() {
+   if (isAlive === true && hasBlackJack === false) {
+       let card = getRandomCard()
+       sum += card
+       cards.push(card)
+       renderGame()        
+   }
+}
